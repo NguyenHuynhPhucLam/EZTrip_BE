@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TourController } from './tour.controller';
 import { TourService } from './tour.service';
+import { TourController } from './tour.controller';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Module({
   controllers: [TourController],
-  providers: [TourService]
+  providers: [TourService, PrismaService],
 })
 export class TourModule {}
