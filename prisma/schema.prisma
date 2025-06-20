@@ -19,6 +19,7 @@ model User {
   password  String
   name      String
   role      String   @default("user")
+  age       Int
   bookings  Booking[]
   reviews   Review[]
   createdAt DateTime @default(now())
@@ -32,6 +33,8 @@ model Tour {
   startDate   DateTime
   endDate     DateTime
   location    String
+  duration    Int       // Thời lượng tour (số ngày)
+  maxTourist  Int       // Số lượng khách tối đa
   bookings    Booking[]
   reviews     Review[]
   createdAt   DateTime  @default(now())

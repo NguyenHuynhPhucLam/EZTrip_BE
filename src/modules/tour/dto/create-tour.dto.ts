@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { IsNotEmpty, IsString, IsNumber, IsDateString } from 'class-validator';
 
 export class CreateTourDto {
@@ -20,4 +19,10 @@ export class CreateTourDto {
 
   @IsString()
   location: string;
+
+  @IsNumber()
+  duration: number;
+
+  @IsNumber()
+  maxTourist: number;
 }
