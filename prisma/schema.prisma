@@ -20,6 +20,8 @@ model User {
   name      String
   role      String   @default("user")
   age       Int
+  phoneNum  String
+  gender    String
   bookings  Booking[]
   reviews   Review[]
   createdAt DateTime @default(now())
@@ -47,6 +49,8 @@ model Booking {
   tour      Tour     @relation(fields: [tourId], references: [id])
   tourId    String
   status    String   @default("pending")
+  totalPrice Float
+  memNum    Int
   createdAt DateTime @default(now())
 }
 

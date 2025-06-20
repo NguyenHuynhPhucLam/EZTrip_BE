@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsUUID, IsOptional, IsIn } from 'class-validator';
+import { IsUUID, IsOptional, IsIn, IsNumber, IsInt } from 'class-validator';
 
 export class CreateBookingDto {
   @IsUUID()
@@ -9,6 +8,12 @@ export class CreateBookingDto {
   tourId: string;
 
   @IsOptional()
-  @IsIn(['pending', 'confirmed', 'cancelled']) // để rõ hơn
+  @IsIn(['pending', 'confirmed', 'cancelled'])
   status?: string;
+
+  @IsNumber()
+  totalPrice: number;
+
+  @IsInt()
+  memNum: number;
 }

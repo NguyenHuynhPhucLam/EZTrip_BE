@@ -2,74 +2,104 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  const tours = [
-    {
-      name: 'Khám phá Đà Lạt 3N2Đ',
-      description:
-        'Hành trình khám phá thành phố sương mù Đà Lạt với nhiều điểm đến hấp dẫn.',
-      price: 2500000,
-      startDate: new Date('2025-07-01T08:00:00.000Z'),
-      endDate: new Date('2025-07-03T18:00:00.000Z'),
-      location: 'Đà Lạt',
-      duration: 3,
-      maxTourist: 30,
-    },
-    {
-      name: 'Du lịch biển Nha Trang 4N3Đ',
-      description:
-        'Tham quan vịnh Nha Trang, VinWonders, đảo Hòn Mun và nhiều hoạt động thú vị.',
-      price: 3200000,
-      startDate: new Date('2025-07-10T09:00:00.000Z'),
-      endDate: new Date('2025-07-13T18:00:00.000Z'),
-      location: 'Nha Trang',
-      duration: 4,
-      maxTourist: 25,
-    },
-    {
-      name: 'Tour miền Tây sông nước 2N1Đ',
-      description:
-        'Khám phá Cần Thơ, chợ nổi Cái Răng, vườn trái cây và đặc sản miền Tây.',
-      price: 1500000,
-      startDate: new Date('2025-07-05T06:00:00.000Z'),
-      endDate: new Date('2025-07-06T18:00:00.000Z'),
-      location: 'Cần Thơ',
-      duration: 2,
-      maxTourist: 40,
-    },
-    {
-      name: 'Tour Hà Nội - Hạ Long 5N4Đ',
-      description:
-        'Trải nghiệm Vịnh Hạ Long, phố cổ Hà Nội và các di tích nổi tiếng.',
-      price: 4500000,
-      startDate: new Date('2025-07-15T07:00:00.000Z'),
-      endDate: new Date('2025-07-19T18:00:00.000Z'),
-      location: 'Hà Nội - Hạ Long',
-      duration: 5,
-      maxTourist: 35,
-    },
-    {
-      name: 'Khám phá Phú Quốc 3N2Đ',
-      description:
-        'Tận hưởng biển xanh, suối Tranh, Vinpearl Safari và ẩm thực biển đảo.',
-      price: 3700000,
-      startDate: new Date('2025-07-20T08:00:00.000Z'),
-      endDate: new Date('2025-07-22T18:00:00.000Z'),
-      location: 'Phú Quốc',
-      duration: 3,
-      maxTourist: 20,
-    },
-  ];
+  // 🔄 Xóa dữ liệu cũ (theo thứ tự khóa ngoại)
+  await prisma.review.deleteMany();
+  await prisma.booking.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.tour.deleteMany();
 
-  for (const tour of tours) {
-    await prisma.tour.create({ data: tour });
-  }
+  // 🌱 Tạo danh sách tour mẫu
+  const tours = await Promise.all([
+    prisma.tour.create({
+      data: {
+        name: 'Tour Đà Lạt 3N2Đ',
+        description: 'Khám phá thành phố sương mù.',
+        price: 2500000,
+        startDate: new Date('2025-07-01T08:00:00.000Z'),
+        endDate: new Date('2025-07-03T18:00:00.000Z'),
+        location: 'Đà Lạt',
+        duration: 3,
+        maxTourist: 30,
+      },
+    }),
+    prisma.tour.create({
+      data: {
+        name: 'Tour Nha Trang 4N3Đ',
+        description: 'Du lịch biển đảo Nha Trang.',
+        price: 3200000,
+        startDate: new Date('2025-07-10T09:00:00.000Z'),
+        endDate: new Date('2025-07-13T18:00:00.000Z'),
+        location: 'Nha Trang',
+        duration: 4,
+        maxTourist: 25,
+      },
+    }),
+  ]);
 
-  console.log('✅ Đã seed dữ liệu tour thành công!');
+  // 🌱 Tạo user mẫu
+  const users = await Promise.all([
+    prisma.user.create({
+      data: {
+        email: 'alice@example.com',
+        password: 'alice123',
+        name: 'Alice',
+        role: 'user',
+        age: 25,
+        phoneNum: '0987654321',
+        gender: 'female',
+      },
+    }),
+    prisma.user.create({
+      data: {
+        email: 'bob@example.com',
+        password: 'bob123',
+        name: 'Bob',
+        role: 'user',
+        age: 30,
+        phoneNum: '0911222333',
+        gender: 'male',
+      },
+    }),
+    prisma.user.create({
+      data: {
+        email: 'admin@example.com',
+        password: 'admin123',
+        name: 'Admin',
+        role: 'admin',
+        age: 35,
+        phoneNum: '0900111222',
+        gender: 'other',
+      },
+    }),
+  ]);
+
+  // 🌱 Tạo booking mẫu
+  await prisma.booking.create({
+    data: {
+      userId: users[0].id,
+      tourId: tours[0].id,
+      memNum: 2,
+      totalPrice: tours[0].price * 2,
+      status: 'confirmed',
+    },
+  });
+
+  await prisma.booking.create({
+    data: {
+      userId: users[1].id,
+      tourId: tours[1].id,
+      memNum: 3,
+      totalPrice: tours[1].price * 3,
+      status: 'pending',
+    },
+  });
+
+  console.log('✅ Đã seed dữ liệu thành công!');
 }
 
 void main()
   .catch((e) => {
-    console.error(e);
+    console.error('❌ Lỗi khi seed dữ liệu:', e);
     process.exit(1);
   })
   .finally(() => {
