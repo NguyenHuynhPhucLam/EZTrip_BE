@@ -94,6 +94,26 @@ async function main() {
     },
   });
 
+  // 🌱 Tạo review mẫu
+  await prisma.review.createMany({
+    data: [
+      {
+        userId: users[0].id,
+        tourId: tours[0].id,
+        rating: 5,
+        comment: 'Tour rất tuyệt vời, hướng dẫn viên thân thiện.',
+      },
+      {
+        userId: users[1].id,
+        tourId: tours[1].id,
+        rating: 4,
+        comment: 'Biển đẹp, dịch vụ ổn nhưng thời gian hơi ngắn.',
+      },
+    ],
+  });
+
+  console.log('✅ Đã seed dữ liệu thành công!');
+
   console.log('✅ Đã seed dữ liệu thành công!');
 }
 
